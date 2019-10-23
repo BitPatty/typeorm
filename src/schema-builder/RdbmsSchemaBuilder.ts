@@ -95,6 +95,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
     }
 
     async createMetadataTableIfNecessary(): Promise<void> {
+        if (!this.queryRunner) this.queryRunner = this.connection.createQueryRunner("master");
         if (this.viewEntityToSyncMetadatas.length > 0) {
             await this.createTypeormMetadataTable();
         }
