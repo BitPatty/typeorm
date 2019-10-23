@@ -70,6 +70,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
             await this.queryRunner.startTransaction();
         try {
             const tablePaths = this.entityToSyncMetadatas.map(metadata => metadata.tablePath);
+            await this.createMetadataTableIfNecessary();
             await this.queryRunner.getTables(tablePaths);
             await this.queryRunner.getViews([]);
             await this.executeSchemaSyncOperationsInProperOrder();
@@ -94,6 +95,9 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
         }
     }
 
+    /**
+     * If the schema contains views, create the typeorm_metadata table if it doesn't exist yet
+     */
     async createMetadataTableIfNecessary(): Promise<void> {
         if (!this.queryRunner) this.queryRunner = this.connection.createQueryRunner("master");
         if (this.viewEntityToSyncMetadatas.length > 0) {
@@ -108,6 +112,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
         this.queryRunner = this.connection.createQueryRunner("master");
         try {
             const tablePaths = this.entityToSyncMetadatas.map(metadata => metadata.tablePath);
+            await this.createMetadataTableIfNecessary();
             await this.queryRunner.getTables(tablePaths);
             await this.queryRunner.getViews([]);
             this.queryRunner.enableSqlMemory();
