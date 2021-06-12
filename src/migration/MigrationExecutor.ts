@@ -162,7 +162,7 @@ export class MigrationExecutor {
      * thus not saved in the database.
      */
     async executePendingMigrations(): Promise<Migration[]> {
-
+        
         const queryRunner = this.queryRunner || this.connection.createQueryRunner();
         // create migrations table if its not created yet
         await this.createMigrationsTableIfNotExist(queryRunner);
